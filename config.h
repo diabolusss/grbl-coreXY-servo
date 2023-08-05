@@ -72,9 +72,8 @@
 // on separate pin, but homed in one cycle. Also, it should be noted that the function of hard limits 
 // will not be affected by pin sharing.
 // NOTE: Defaults are set for a traditional 3-axis CNC machine. Z-axis first to clear, followed by X & Y.
-//#define HOMING_CYCLE_0 (1<<Z_AXIS)                // REQUIRED: First move Z to clear workspace.
-//#define HOMING_CYCLE_1 ((1<<X_AXIS)|(1<<Y_AXIS))  // OPTIONAL: Then move X,Y at the same time.
-#define HOMING_CYCLE_0 ((1<<X_AXIS)|(1<<Y_AXIS))
+// #define HOMING_CYCLE_0 (1<<Z_AXIS)                // REQUIRED: First move Z to clear workspace.
+// #define HOMING_CYCLE_1 ((1<<X_AXIS)|(1<<Y_AXIS))  // OPTIONAL: Then move X,Y at the same time.
 // #define HOMING_CYCLE_2                         // OPTIONAL: Uncomment and add axes mask to enable
 
 // Number of homing cycles performed after when the machine initially jogs to limit switches.
@@ -127,8 +126,8 @@
 #define MESSAGE_PROBE_COORDINATES // Enabled by default. Comment to disable.
  
 // Enables a second coolant control pin via the mist coolant g-code command M7 on the Arduino Uno
-// analog pin 5. Only use this option if you require a second coolant control pin.
-// NOTE: The M8 flood coolant control pin on analog pin 4 will still be functional regardless.
+// analog pin 4. Only use this option if you require a second coolant control pin.
+// NOTE: The M8 flood coolant control pin on analog pin 3 will still be functional regardless.
 // #define ENABLE_M7 // Disabled by default. Uncomment to enable.
 
 // This option causes the feed hold input to act as a safety door switch. A safety door, when triggered,
@@ -145,17 +144,27 @@
 
 // Enable CoreXY kinematics. Use ONLY with CoreXY machines. 
 // IMPORTANT: If homing is enabled, you must reconfigure the homing cycle #defines above to 
-// #define HOMING_CYCLE_0 (1<<X_AXIS) and #define HOMING_CYCLE_1 (1<<Y_AXIS)
+ #define HOMING_CYCLE_0 (1<<X_AXIS)
+ #define HOMING_CYCLE_1 (1<<Y_AXIS)
 // NOTE: This configuration option alters the motion of the X and Y axes to principle of operation
 // defined at (http://corexy.com/theory.html). Motors are assumed to positioned and wired exactly as
-// described, if not, motions may move in strange directions. Grbl assumes the CoreXY A and B motors
+// described, if not, motions may move in strange directions. Grbl requires the CoreXY A and B motors
 // have the same steps per mm internally.
-#define COREXY // Default disabled. Uncomment to enable.
+   #define COREXY // Default disabled. Uncomment to enable.
 
 // Inverts pin logic of the control command pins. This essentially means when this option is enabled
 // you can use normally-closed switches, rather than the default normally-open switches.
-// NOTE: Will eventually be added to Grbl settings in v1.0.
-// #define INVERT_CONTROL_PIN // Default disabled. Uncomment to enable.
+// NOTE: If you require individual control pins inverted, keep this macro disabled and simply alter
+//   the CONTROL_INVERT_MASK definition in cpu_map.h files.
+// #define INVERT_ALL_CONTROL_PINS // Default disabled. Uncomment to enable.
+
+// Inverts select limit pin states based on the following mask. This effects all limit pin functions, 
+// such as hard limits and homing. However, this is different from overall invert limits setting. 
+// This build option will invert only the limit pins defined here, and then the invert limits setting
+// will be applied to all of them. This is useful when a user has a mixed set of limit pins with both
+// normally-open(NO) and normally-closed(NC) switches installed on their machine.
+// NOTE: PLEASE DO NOT USE THIS, unless you have a situation that needs it.
+// #define INVERT_LIMIT_PIN_MASK ((1<<X_LIMIT_BIT)|(1<<Y_LIMIT_BIT)) // Default disabled. Uncomment to enable.
 
 // Inverts the spindle enable pin from low-disabled/high-enabled to low-enabled/high-disabled. Useful
 // for some pre-built electronic boards.
@@ -243,7 +252,7 @@
 // equally divided voltage bins between the maximum and minimum spindle speeds. So for a 5V pin, 1000
 // max rpm, and 250 min rpm, the spindle output voltage would be set for the following "S" commands: 
 // "S1000" @ 5V, "S250" @ 0.02V, and "S625" @ 2.5V (mid-range). The pin outputs 0V when disabled.
-#define SPINDLE_MAX_RPM 90 // Max spindle RPM. This value is equal to 100% duty cycle on the PWM.
+#define SPINDLE_MAX_RPM 1000.0 // Max spindle RPM. This value is equal to 100% duty cycle on the PWM.
 #define SPINDLE_MIN_RPM 0.0    // Min spindle RPM. This value is equal to (1/256) duty cycle on the PWM.
 
 // Used by variable spindle output only. This forces the PWM output to a minimum duty cycle when enabled.
@@ -257,7 +266,10 @@
 // the spindle direction pin(D13) as a separate spindle enable pin along with spindle speed PWM on pin D11. 
 // NOTE: This configure option only works with VARIABLE_SPINDLE enabled and a 328p processor (Uno). 
 // NOTE: With no direction pin, the spindle clockwise M4 g-code command will be removed. M3 and M5 still work.
-//#define USE_SPINDLE_DIR_AS_ENABLE_PIN // Default disabled. Uncomment to enable.
+// NOTE: BEWARE! The Arduino bootloader toggles the D13 pin when it powers up. If you flash Grbl with
+// a programmer (you can use a spare Arduino as "Arduino as ISP". Search the web on how to wire this.), 
+// this D13 LED toggling should go away. We haven't tested this though. Please report how it goes!
+// #define USE_SPINDLE_DIR_AS_ENABLE_PIN // Default disabled. Uncomment to enable.
 
 // With this enabled, Grbl sends back an echo of the line it has received, which has been pre-parsed (spaces
 // removed, capitalized letters, no comments) and is to be immediately executed by Grbl. Echoes will not be 

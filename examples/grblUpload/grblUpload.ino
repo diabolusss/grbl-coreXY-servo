@@ -1,9 +1,6 @@
 /***********************************************************************
 This sketch compiles and uploads Grbl to your 328p-based Arduino! 
 
-www.ArnabKumarDas.com 
-http://www.arnabkumardas.com/topics/cnc/how-to-make-an-arduino-drawing-machine/ 
-
 To use:
 - First make sure you have imported Grbl source code into your Arduino
   IDE. There are details on our Github website on how to do this.
