@@ -1,3 +1,22 @@
+# Update Summary for v0.9j
+```
+Restore EEPROM feature: A new set of restore EEPROM features to help OEMs and users reset their Grbl installation to the build defaults. See Configuring Grbl Wiki for details.
+More configuration options for input pins
+Bug fixes including: Soft limit error handling, disable spindle when S0, g-code reporting of G38.x.
+```
+
+# Update Summary for v0.9i
+```
+IMPORTANT:
+Homing cycle updated. Locates based on trigger point, rather than release point.
+System tweaks: $14 cycle auto-start has been removed. No more QUEUE state.
+New G-Codes
+CoreXY Support
+Safety Door Support
+Full Limit and Control Pin Configurability
+Additional Compile-Time Feature Options
+```
+
 # grbl-coreXY-servo
 
 Visit My Project DIY Guide Page : http://www.arnabkumardas.com
